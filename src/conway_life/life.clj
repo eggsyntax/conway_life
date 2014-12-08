@@ -15,7 +15,7 @@
   )
 
 ;test fns
-(def v (vector2d/vector2d [4 4] #(rand-int 5))) ;TEMP for testing
+(def v (vector2d/vector2d [4 4] rand-off-on)) ;TEMP for testing
 v
 (def row [0 1 2 3])
 row
@@ -42,15 +42,30 @@ v
   [cell]
   (zero? cell))
 
-(defn live-neighbors
+(if (= 1 1) 1 0)
+
+(defn num-live-neighbors
   "Returns the # of live neighbors, *including* the cell itself"
   [v2d]
   ; Return a copy of the v2d with all positive numbers decreased to 1
   (letfn [(pos-to-1 [n] (if (pos? n) 1 0))]
-    (reduce + (map pos-to-1 (flatten v)))))
+    (reduce + (map pos-to-1 (flatten v2d)))))
 
 ; test
-(live-neighbors v)
+(neighborhood v 2 2)
+(num-live-neighbors (neighborhood v 2 2))
+
+(defn alive-next-tick?
+  [v2d x y]
+  (let [cur-live-neighbors (num-live-neighbors (neighborhood v2d x y))]
+    (if (dead? ((v2d y) x))
+      (= 3 cur-live-neighbors)
+      ;else
+      (<= 4 cur-live-neighbors 5) ; Note: increased by 1 because we include the current cell in the count
+       )))
+
+v
+(alive-next-tick? v 1 0)
 
 (defn tick
   [state]
