@@ -14,16 +14,24 @@
    }
   )
 
+;test fns
 (def v (vector2d/vector2d [4 4] #(rand-int 5))) ;TEMP for testing
-
-
+v
+(def row [0 1 2 3])
+row
 
 (defn neighborhood
+  "Return a 3x3 subvector of v2d, centered on (x, y)"
   [v2d x y]
-  (let [neighborhood-1d (fn [v center] (subvec v (dec center) (+ center 2)))
+  ; neighborhood-1d just returns a slice, with a bit of complication to handle wrapping.
+  (let [neighborhood-1d (fn [v center] [(v (mod (dec center) (count v)))
+                                        (v center)
+                                        (v (mod (inc center) (count v)))])
+        ; rows returns a subvector containing 3 rows of v2d
         rows (neighborhood-1d v2d y)]
     (map neighborhood-1d rows (repeat x))
   ))
+
 
 ; test fns for neighborhood
 v
@@ -33,6 +41,16 @@ v
 (defn dead?
   [cell]
   (zero? cell))
+
+(defn live-neighbors
+  "Returns the # of live neighbors, *including* the cell itself"
+  [v2d]
+  ; Return a copy of the v2d with all positive numbers decreased to 1
+  (letfn [(pos-to-1 [n] (if (pos? n) 1 0))]
+    (reduce + (map pos-to-1 (flatten v)))))
+
+; test
+(live-neighbors v)
 
 (defn tick
   [state]
