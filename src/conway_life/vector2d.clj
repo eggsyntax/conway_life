@@ -68,9 +68,27 @@ v2d
 
     (vec (map-indexed index-row v2d))))
 
+; test
 (let [indexed-v2d (index-v2d v2d :mult 10)]
   indexed-v2d
   ((indexed-v2d 2) 1)
 
   )
+; /test
 
+(defn make-index
+  [v2d]
+  (let [y (count v2d)
+        x (count (v2d 0))]
+    (loop [i y
+           i-v2d []]
+      (if (zero? i)
+        i-v2d
+        (recur (dec i) (conj i-v2d (vec (map vector (repeat (- y i)) (range x)))))
+
+    ))))
+
+; test
+(def v (vector2d/vector2d [4 4] rand-off-on))
+(make-index v)
+; /test
