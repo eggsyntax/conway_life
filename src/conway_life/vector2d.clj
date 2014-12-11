@@ -36,6 +36,17 @@ a
   [f]
   (fn [cols] (vec (map f cols))))
 
+; test functions for mapcols-fn
+a
+;(letfn [(doub [i] (* i 2))]
+(defn doub [i] (* i 2))
+(doub 3)
+(let [f (mapcols-fn doub)]
+;(let [f (fn [v] (* v 2))]
+  (f [3 5]))
+
+; end test functions for mapcols-fn
+
 (defn map2d
   "Apply a function to each cell of a vector2d, returning another vector2d."
   ; for each row:
