@@ -34,16 +34,17 @@ a
 (defn mapcols-fn
   "helper fn for map2d. Return a function which applies f to all members of a 1-d sequence."
   [f]
-  (fn [cols] (vec (map f cols))))
+  (fn [& cols] (vec (map f cols))))
 
 ; test functions for mapcols-fn
 a
 ;(letfn [(doub [i] (* i 2))]
 (defn doub [i] (* i 2))
 (doub 3)
-(let [f (mapcols-fn doub)]
-;(let [f (fn [v] (* v 2))]
-  (f [3 5]))
+(defn doub-all [v]
+  (map doub v))
+(let [f (mapcols-fn doub-all)]
+  (f [3] [5]))
 
 ; end test functions for mapcols-fn
 
@@ -52,16 +53,21 @@ a
   ; for each row:
   ;   map cells to function, return the result
   [f v2d]
-  (vec (map (mapcols-fn f) v2d))
-  )
+  (let [g (mapcols-fn f)]
+    (println (g [2 3]))
+    (vec (map g v2d))
+  ))
 
 
 ; test functions for map2d
 
 (defn doub [i] (* i 2))
+(defn doub-all [v]
+  (map doub v))
+(doub-all [2 3])
 (def v2d (vector2d [4 3] rand-off-on))
 v2d
-(map2d doub v2d)
+(map2d doub-all v2d)
 
 ;;;;
 
