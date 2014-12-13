@@ -29,7 +29,6 @@ a
 
 ((a 1) 0)
 
-;;;;;
 
 (defn mapcols-fn
   "helper fn for map2d. Return a function which applies f to all members of a 1-d sequence."
@@ -54,7 +53,6 @@ a
   ;   map cells to function, return the result
   [f v2d]
   (let [g (mapcols-fn f)]
-    (println (g [2 3]))
     (vec (map g v2d))
   ))
 
@@ -69,7 +67,6 @@ a
 v2d
 (map2d doub-all v2d)
 
-;;;;
 
 (defn index-v2d
   "Given an input v2d, [[val val val...] [val val val...]...], return an indexed version:
@@ -93,19 +90,3 @@ v2d
   )
 ; /test
 
-(defn make-index
-  [v2d]
-  (let [y (count v2d)
-        x (count (v2d 0))]
-    (loop [i y
-           i-v2d []]
-      (if (zero? i)
-        i-v2d
-        (recur (dec i) (conj i-v2d (vec (map vector (repeat (- y i)) (range x)))))
-
-    ))))
-
-; test
-(def v (vector2d/vector2d [4 4] rand-off-on))
-(make-index v)
-; /test

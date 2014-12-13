@@ -10,6 +10,7 @@
   "Returns a map of symbol definitions"
   {:second 0
    :num-cells num-cells
+   ; TODO maybe refactor to delete index-v2d. Not sure I need it anymore at all.
    :state (vector2d/index-v2d (vector2d/vector2d num-cells rand-off-on) :mult (cell-size 0)) ;TODO - maybe refactor index-v2d to handle different x & y sizes
    }
   )
@@ -20,6 +21,7 @@ v
 (def row [0 1 2 3])
 row
 
+; TODO might think about how to make this easily parallelizable
 (defn neighborhood
   "Return a 3x3 subvector of v2d, centered on (x, y)"
   [v2d x y]
@@ -56,6 +58,7 @@ v
 (num-live-neighbors (neighborhood v 2 2))
 
 (defn alive-next-tick?
+  "Returns the next state for a particular cell"
   [v2d x y]
   (let [cur-live-neighbors (num-live-neighbors (neighborhood v2d x y))]
     (if (dead? ((v2d y) x))
@@ -64,8 +67,39 @@ v
       (<= 4 cur-live-neighbors 5) ; Note: increased by 1 because we include the current cell in the count
        )))
 
+(defn index [v]
+  (range (count v)))
+(index [1 2 3])
+
+(defn bool-to-int [v]
+  (if (= true v)
+    1
+    0))
+(bool-to-int true)
+
+(defn get-next-row-state
+  [v2d y]
+  (let [row (v2d y)]
+    (vec
+     (for [x (index row)]
+      (bool-to-int (alive-next-tick? v2d x 0))))))
 v
-(alive-next-tick? v 1 0)
+(get-next-row-state v 0)
+
+(defn get-next-state
+  "Return the next state for all cells in a vector2d"
+  [v2d]
+  (vec
+    (for [y (index v2d)]
+      (get-next-row-state v2d y))))
+(get-next-state v)
+
+
+v
+(indexed v)
+(alive-next-tick? v 1 2)
+(get-next-state v)
+
 
 (defn tick
   [state]
@@ -78,8 +112,3 @@ v
   state
   )
 
-
-; probably delete
-(defn n-random
-  [n]
-  (take n (repeatedly (fn [] (rand-int 2)))))
