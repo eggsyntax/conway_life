@@ -4,13 +4,13 @@
             [life]
             [vector2d]))
 
-(def size {:x 500 :y 400}) ; Physical width of screen
-(def num-cells [50 40])
+(def size {:x 500 :y 500}) ; Physical width of screen
+(def num-cells [50 50])
 (def cell-size [(/ (size :x) (num-cells 0)) (/ (size :y) (num-cells 1))])
 
 (defn setup []
   ; Set frame rate to 30 frames per second.
-  (q/frame-rate 1)
+  (q/frame-rate 10)
   ; Set color mode to HSB (HSV) instead of default RGB.
   (q/color-mode :hsb)
   (q/fill 80)

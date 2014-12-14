@@ -63,7 +63,7 @@ v
     (if (dead? ((v2d y) x))
       (= 3 cur-live-neighbors)
       ;else
-      (<= 4 cur-live-neighbors 5) ; Note: increased by 1 because we include the current cell in the count
+      (<= 3 cur-live-neighbors 4) ; Note: increased by 1 because we include the current cell in the count
        )))
 
 
@@ -78,7 +78,7 @@ v
   (let [row (v2d y)]
     (vec
      (for [x (vector2d/index row)]
-      (bool-to-int (alive-next-tick? v2d x 0))))))
+      (bool-to-int (alive-next-tick? v2d x y))))))
 v
 (get-next-row-state v 0)
 
@@ -98,8 +98,8 @@ v
 
 (defn tick
   [state]
-  (let [old-cells (state :cells-state)
-        new-second (inc (state :second))]
-    state
-  ))
+  (assoc state
+    :old-cells (state :cells-state)
+    :second (inc (state :second))
+    :cells-state (get-next-state (state :cells-state))))
 
