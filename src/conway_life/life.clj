@@ -1,4 +1,5 @@
 (ns life
+  "Logic specific to Conway's Life"
   (:require [vector2d]))
 
 (defn rand-off-on
@@ -6,7 +7,7 @@
   (rand-int 2))
 
 (defn setup
-  [num-cells cell-size] ;TD cell-size: necessary?
+  [num-cells]
   "Returns a map of symbol definitions"
   {:second 0
    :num-cells num-cells
@@ -39,11 +40,8 @@ v
 (neighborhood v 0 3)
 ; end test fns for neighborhood
 
-(defn dead?
-  [cell]
+(defn dead? [cell]
   (zero? cell))
-
-(if (= 1 1) 1 0)
 
 (defn num-live-neighbors
   "Returns the # of live neighbors, *including* the cell itself"
@@ -56,50 +54,46 @@ v
 (neighborhood v 2 2)
 (num-live-neighbors (neighborhood v 2 2))
 
-(defn alive-next-tick?
-  "Returns the next state for a particular cell"
-  [v2d x y]
-  (let [cur-live-neighbors (num-live-neighbors (neighborhood v2d x y))]
-    (if (dead? ((v2d y) x))
-      (= 3 cur-live-neighbors)
-      ;else
-      (<= 3 cur-live-neighbors 4) ; Note: increased by 1 because we include the current cell in the count
-       )))
-
-
 (defn bool-to-int [v]
   (if (= true v)
     1
     0))
 (bool-to-int true)
 
-(defn get-next-row-state
+(defn next-cell-state
+  "Returns the next state for a particular cell"
+  [v2d x y]
+  (let [cur-live-neighbors (num-live-neighbors (neighborhood v2d x y))]
+    (if (dead? ((v2d y) x))
+      (bool-to-int (= 3 cur-live-neighbors))
+      ;else
+      (bool-to-int (<= 3 cur-live-neighbors 4)) ; Note: increased by 1 because we include the current cell in the count
+       )))
+v
+(next-cell-state v 1 1)
+
+(defn next-row-state
   [v2d y]
   (let [row (v2d y)]
     (vec
      (for [x (vector2d/index row)]
-      (bool-to-int (alive-next-tick? v2d x y))))))
+       (next-cell-state v2d x y)))))
 v
-(get-next-row-state v 0)
+(next-row-state v 1)
 
-(defn get-next-state
+(defn next-state
   "Return the next state for all cells in a vector2d"
   [v2d]
   (vec
     (for [y (vector2d/index v2d)]
-      (get-next-row-state v2d y))))
-(get-next-state v)
-
-
+      (next-row-state v2d y))))
 v
-(alive-next-tick? v 1 2)
-(get-next-state v)
-
+(next-state v)
 
 (defn tick
   [state]
   (assoc state
     :old-cells (state :cells-state)
     :second (inc (state :second))
-    :cells-state (get-next-state (state :cells-state))))
+    :cells-state (next-state (state :cells-state))))
 
