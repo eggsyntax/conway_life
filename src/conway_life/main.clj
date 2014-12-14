@@ -6,8 +6,8 @@
             [vector2d]))
 
 (def screen-size {:x 500 :y 500}) ; Physical width of screen
-(def num-cells [50 50])
-(def cell-size [(/ (size :x) (num-cells 0)) (/ (size :y) (num-cells 1))])
+(def num-cells [60 60])
+(def cell-size [(/ (screen-size :x) (num-cells 0)) (/ (screen-size :y) (num-cells 1))])
 
 (defn setup []
   ; frame rate for sketch
@@ -52,7 +52,7 @@
 
 (q/defsketch main
   :title "Functional parallel life"
-  :size [(size :x) (size :y)]
+  :size [(screen-size :x) (screen-size :y)]
   ; setup function called only once, during sketch initialization.
   :setup setup
   ; update is called on each iteration before draw is called.
