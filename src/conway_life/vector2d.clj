@@ -60,13 +60,15 @@ a
 ; test functions for map2d
 
 (defn doub [i] (* i 2))
-(defn doub-all [v]
-  (map doub v))
-(doub-all [2 3])
 (def v2d (vector2d [4 3] rand-off-on))
 v2d
 (map2d doub-all v2d)
 
+(defn index
+  "Return an index sequence for a (1d) vector"
+  [v]
+  (range (count v)))
+(index [1 2 3])
 
 (defn index-v2d
   "Given an input v2d, [[val val val...] [val val val...]...], return an indexed version:

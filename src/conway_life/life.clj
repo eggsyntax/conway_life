@@ -11,7 +11,9 @@
   {:second 0
    :num-cells num-cells
    ; TODO maybe refactor to delete index-v2d. Not sure I need it anymore at all.
-   :state (vector2d/index-v2d (vector2d/vector2d num-cells rand-off-on) :mult (cell-size 0)) ;TODO - maybe refactor index-v2d to handle different x & y sizes
+   ;:state (vector2d/index-v2d (vector2d/vector2d num-cells rand-off-on) :mult (cell-size 0)) ;TODO - maybe refactor index-v2d to handle different x & y sizes
+   :cells-state (vector2d/vector2d num-cells rand-off-on)
+   ;:state (vector2d/index-v2d v :mult (cell-size 0)) ;TODO - maybe refactor index-v2d to handle different x & y sizes
    }
   )
 
@@ -67,9 +69,6 @@ v
       (<= 4 cur-live-neighbors 5) ; Note: increased by 1 because we include the current cell in the count
        )))
 
-(defn index [v]
-  (range (count v)))
-(index [1 2 3])
 
 (defn bool-to-int [v]
   (if (= true v)
@@ -81,7 +80,7 @@ v
   [v2d y]
   (let [row (v2d y)]
     (vec
-     (for [x (index row)]
+     (for [x (vector2d/index row)]
       (bool-to-int (alive-next-tick? v2d x 0))))))
 v
 (get-next-row-state v 0)
@@ -90,25 +89,20 @@ v
   "Return the next state for all cells in a vector2d"
   [v2d]
   (vec
-    (for [y (index v2d)]
+    (for [y (vector2d/index v2d)]
       (get-next-row-state v2d y))))
 (get-next-state v)
 
 
 v
-(indexed v)
 (alive-next-tick? v 1 2)
 (get-next-state v)
 
 
 (defn tick
   [state]
-  (let [old-cells (state :state)
+  (let [old-cells (state :cells-state)
         new-second (inc (state :second))]
-    )
-
-  ;(print state "  ")
-  ;(println "Tick")
-  state
-  )
+    state
+  ))
 

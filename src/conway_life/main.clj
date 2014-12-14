@@ -24,22 +24,29 @@
 )
 
 (defn draw-cell
-  [args]
-  (let [[x y val] args]
-    (if (pos? val)
-        (q/rect x y (cell-size 0) (cell-size 1)))))
+  [x y value]
+  (let [x-mult (cell-size 0)
+        y-mult (cell-size 1)
+        x-pos (* x x-mult)
+        y-pos (* y y-mult)]
+    (if (pos? value)
+        (q/rect x-pos y-pos x-mult y-mult))))
 
 (defn draw-cells
-  [v2d-indexed]
-  (vector2d/map2d draw-cell v2d-indexed)
-  )
+  [v2d]
+  (vec
+    (for [row (vector2d/index v2d)
+          col (vector2d/index (v2d 0))]
+      (draw-cell row col ((v2d row) col)))))
+
 
 (defn draw [state]
+  (println "Drawing.")
   ; Clear the sketch by filling it with light-grey color.
   (q/background 240)
   ;
   ;(q/fill (:color state) 255 255)
-  (draw-cells (:state state))
+  (draw-cells (state :cells-state))
 
 
 )
