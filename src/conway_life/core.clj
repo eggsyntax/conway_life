@@ -1,40 +1,58 @@
-(ns conway-life.core
+(ns main
+  "Handle Processing-specific stuff and graphics logic"
   (:require [quil.core :as q]
-            [quil.middleware :as m]))
+            [quil.middleware :as m]
+            [life]
+            [vector2d]))
+
+(def screen-size {:x 500 :y 500}) ; Physical width of screen
+(def num-cells [60 60])
+(def cell-size [(/ (screen-size :x) (num-cells 0)) (/ (screen-size :y) (num-cells 1))])
 
 (defn setup []
-  ; Set frame rate to 30 frames per second.
-  (q/frame-rate 30)
+  ; frame rate for sketch
+  (q/frame-rate 10)
   ; Set color mode to HSB (HSV) instead of default RGB.
   (q/color-mode :hsb)
-  ; setup function returns initial state. It contains
-  ; circle color and position.
-  {:color 0
-   :angle 0})
+  (q/fill 80)
+  (q/stroke 80)
+  ; setup function returns initial randomized state.
+  (life/setup num-cells)
+  )
 
 (defn update [state]
   ; Update sketch state by changing circle color and position.
-  {:color (mod (+ (:color state) 0.7) 255)
-   :angle (+ (:angle state) 0.1)})
+  (life/tick state)
+)
+
+(defn draw-cell
+  [x y value]
+  (let [x-size (cell-size 0)
+        y-size (cell-size 1)
+        x-pos (* x x-size)
+        y-pos (* y y-size)]
+    (if (pos? value)
+        (q/rect x-pos y-pos x-size y-size))))
+
+(defn draw-cells
+  [v2d]
+  (vec
+    (for [row (vector2d/index v2d)
+          col (vector2d/index (v2d 0))]
+      (draw-cell row col ((v2d row) col)))))
 
 (defn draw [state]
+  ;(println "Drawing tick" (state :second) ".")
   ; Clear the sketch by filling it with light-grey color.
   (q/background 240)
-  ; Set circle color.
-  (q/fill (:color state) 255 255)
-  ; Calculate x and y coordinates of the circle.
-  (let [angle (:angle state)
-        x (* 150 (q/cos angle))
-        y (* 150 (q/sin angle))]
-    ; Move origin point to the center of the sketch.
-    (q/with-translation [(/ (q/width) 2)
-                         (/ (q/height) 2)]
-      ; Draw the circle.
-      (q/ellipse x y 100 100))))
+  (draw-cells (state :cells-state))
+)
 
-(q/defsketch conway-life
-  :title "You spin my circle right round"
-  :size [500 500]
+
+
+(q/defsketch main
+  :title "Functional parallel life"
+  :size [(screen-size :x) (screen-size :y)]
   ; setup function called only once, during sketch initialization.
   :setup setup
   ; update is called on each iteration before draw is called.
