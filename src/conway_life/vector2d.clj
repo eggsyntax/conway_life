@@ -70,25 +70,3 @@ v2d
   (range (count v)))
 (index [1 2 3])
 
-(defn index-v2d
-  "Given an input v2d, [[val val val...] [val val val...]...], return an indexed version:
-  [[[0 0 val] [0 1 val] [0 2 val]...]
-   [[1 0 val] [1 1 val] [1 2 val]...]
-   ...]
-  Optionally, pass a multiplier which wil be applied to all index values."
-  [v2d & {:keys [mult] :or {mult 1}}]
-  (letfn [(index-row
-            ;Given a row and j, the index of that row, return the indexed row: [[j 0 val] [j 1 val] [j 2 val]...]
-            [j row]
-            (vec (map vector (iterate (partial + mult) 0) (repeat (* j mult)) row)))]
-
-    (vec (map-indexed index-row v2d))))
-
-; test
-(let [indexed-v2d (index-v2d v2d :mult 10)]
-  indexed-v2d
-  ((indexed-v2d 2) 1)
-
-  )
-; /test
-

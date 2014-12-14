@@ -10,10 +10,7 @@
   "Returns a map of symbol definitions"
   {:second 0
    :num-cells num-cells
-   ; TODO maybe refactor to delete index-v2d. Not sure I need it anymore at all.
-   ;:state (vector2d/index-v2d (vector2d/vector2d num-cells rand-off-on) :mult (cell-size 0)) ;TODO - maybe refactor index-v2d to handle different x & y sizes
    :cells-state (vector2d/vector2d num-cells rand-off-on)
-   ;:state (vector2d/index-v2d v :mult (cell-size 0)) ;TODO - maybe refactor index-v2d to handle different x & y sizes
    }
   )
 
