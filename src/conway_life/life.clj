@@ -2,6 +2,22 @@
   "Logic specific to Conway's Life"
   (:require [vector2d]))
 
+;; Approach to concurrency: agents
+;;
+;; Maintain a list of future states. The draw function just pops the
+;; head from the list.
+;; Update method takes the tail of the list of states and sends each row
+;; to a different agent. The agents' outputs are a row of next-state
+;; values, which are collected (?) together into a full v2d next-state,
+;; which is added to the tail of the list.
+;; If the list has, say, > 20 values, the update method just sleeps
+;; briefly instead.
+;; Requires special error-handling (pg 107, _Practical Clojure_).
+;;
+;; 'await' and 'await-for' let you block until a thread returns. Needed? Dunno.
+;;
+;; 'shutdown-agents' at end
+
 (defn rand-off-on
   []
   (rand-int 2))
@@ -89,6 +105,9 @@ v
       (next-row-state v2d y))))
 v
 (next-state v)
+
+; TODO now create a version of next-state (and maybe next-row-state) which uses
+; v2d-set to set each cell. More easily parallelizable.
 
 (defn tick
   [state]

@@ -14,6 +14,17 @@
       #(vec (take xsize
         (repeatedly cell-function)))))))
 (vector2d [3 2] #(int 0))
+(def v (vector2d [4 3] rand-off-on))
+
+(defn v2d-set
+  "Setter function to ease parallelization"
+  [v2d x y newval]
+  (let [row (v2d y)
+        new-row (assoc (v2d y) x newval)]
+    new-row
+    ))
+v
+(v2d-set v 0 0 9)
 
 (defn rand-off-on []
   "Return 0 or 1 at random."
